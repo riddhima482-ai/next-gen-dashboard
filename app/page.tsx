@@ -342,7 +342,9 @@ export default function DashboardPage() {
           </div>
 
         </div>
-      </div>
+      </div>git add .
+git commit -m "feat: added lock screen gate and custom design layers"
+git push origin main
     </main>
   );
 }
