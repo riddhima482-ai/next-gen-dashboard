@@ -13,7 +13,7 @@ interface Course {
 export const revalidate = 0;
 
 export default async function Page() {
-  // Pull entries straight from your server database
+  // Safe fetch direct from Supabase server infrastructure
   const { data: fetchResults, error } = await supabase
     .from('courses')
     .select('*')
@@ -28,20 +28,20 @@ export default async function Page() {
   }
 
   const courses = fetchResults as Course[];
-  const springPhysics = { type: 'spring', stiffness: 300, damping: 20 };
 
   return (
-    // Fixed container framework prevents the main grid from pushing the navigation menu out
-    <div className="w-full min-h-screen bg-zinc-950 text-zinc-50 flex flex-col md:flex-row relative overflow-hidden font-sans selection:bg-purple-500/30">
+    // Outer frame layout using flex-col for mobile layout stack, flex-row to guarantee left-right split on desktop
+    <div className="w-full min-h-screen bg-zinc-950 text-zinc-50 flex flex-col md:flex-row relative font-sans selection:bg-purple-500/30">
       
-      {/* Background ambient lighting effects */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f1f23_1px,transparent_1px),linear-gradient(to_bottom,#1f1f23_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20 pointer-events-none" />
+      {/* Visual aesthetics: ambient backgrounds */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/5 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f1f23_1px,transparent_1px),linear-gradient(to_bottom,#1f1f23_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20 pointer-events-none z-0" />
 
-      {/* 1. STRUCTURAL NAVIGATION SIDEBAR (Stays firmly fixed on the left on desktop screens) */}
-      <nav className="w-full md:w-64 bg-zinc-900/40 border-b md:border-b-0 md:border-r border-zinc-800/60 p-5 flex md:flex-col justify-between items-center md:items-start backdrop-blur-md z-20 shrink-0">
+      {/* 1. STRUCTURAL SIDEBAR */}
+      <nav className="w-full md:w-64 bg-zinc-900/40 border-b md:border-b-0 md:border-r border-zinc-800/60 p-5 flex md:flex-col justify-between items-center md:items-start backdrop-blur-md z-20 shrink-0 md:sticky md:top-0 md:h-screen">
         <div className="flex md:flex-col gap-8 w-full items-center md:items-start">
-          {/* Main Workspace Brand Identification */}
+          
+          {/* Brand Identification */}
           <div className="flex items-center gap-3">
             <div className="p-2 bg-purple-600 rounded-xl shadow-[0_0_15px_rgba(147,51,234,0.3)]">
               <Icons.Terminal className="w-5 h-5 text-white" />
@@ -51,7 +51,7 @@ export default async function Page() {
             </span>
           </div>
           
-          {/* Dashboard Navigation Items */}
+          {/* Functional Sidebar Menu Nodes */}
           <div className="hidden md:flex flex-col gap-1.5 w-full">
             <div className="px-4 py-2 text-[10px] font-bold tracking-wider uppercase text-zinc-500 mb-1">
               Navigation
@@ -71,22 +71,22 @@ export default async function Page() {
           </div>
         </div>
 
-        {/* Base Telemetry Tag */}
+        {/* Lower Telemetry Stream Check */}
         <div className="hidden md:flex items-center gap-2 text-[10px] text-zinc-600 font-mono border-t border-zinc-900/60 pt-4 w-full">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           <span>NODE // ONLINE</span>
         </div>
       </nav>
 
-      {/* 2. DYNAMIC BENTO WORKSPACE LAYOUT CONTAINER */}
-      <main className="flex-1 p-6 md:p-10 overflow-y-auto z-10 w-full">
+      {/* 2. MAIN BENTO CANVAS WORKSPACE */}
+      <main className="flex-1 p-6 md:p-10 z-10 w-full min-w-0">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[150px]">
           
-          {/* HERO GREETING TILE */}
+          {/* HERO GREETING COMPONENT MODULE */}
           <motion.section 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={springPhysics}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             whileHover={{ scale: 1.01 }}
             className="md:col-span-3 bg-gradient-to-r from-zinc-900/60 via-zinc-900/30 to-transparent border border-zinc-800/60 rounded-3xl p-6 flex flex-col justify-between backdrop-blur-sm relative group"
           >
@@ -102,7 +102,7 @@ export default async function Page() {
             </div>
           </motion.section>
 
-          {/* DYNAMIC COURSE CARDS (Staggered Animation Modules) */}
+          {/* RENDERING DYNAMIC DATABASE DRIVEN TILES */}
           {courses.map((course) => {
             const IconComponent = (Icons as any)[course.icon] || Icons.Code;
 
@@ -111,7 +111,7 @@ export default async function Page() {
                 key={course.id}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={springPhysics}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 whileHover={{ scale: 1.02, borderColor: 'rgba(168,85,247,0.3)' }}
                 className="md:col-span-1 p-6 bg-zinc-900/40 border border-zinc-800/60 rounded-3xl flex flex-col justify-between backdrop-blur-md cursor-pointer relative overflow-hidden group"
               >
@@ -131,12 +131,12 @@ export default async function Page() {
                     {course.title}
                   </h3>
                   
-                  {/* Smooth, spring-animated progress metrics */}
+                  {/* Progress bar */}
                   <div className="w-full bg-zinc-950 h-1 rounded-full mt-3 overflow-hidden border border-zinc-900">
                     <motion.div 
                       initial={{ width: 0 }}
                       animate={{ width: `${course.progress}%` }}
-                      transition={{ ...springPhysics, delay: 0.15 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.15 }}
                       className="bg-gradient-to-r from-purple-500 to-indigo-500 h-full rounded-full"
                     />
                   </div>
@@ -145,11 +145,11 @@ export default async function Page() {
             );
           })}
 
-          {/* TELEMETRY CONTRIBUTION MATRIX GRID */}
+          {/* TELEMETRY ENGINE GRAPH INFRASTRUCTURE SHEET */}
           <motion.section 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={springPhysics}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             whileHover={{ scale: 1.01 }}
             className="md:col-span-3 md:row-span-2 p-6 bg-zinc-900/40 border border-zinc-800/60 rounded-3xl flex flex-col justify-between backdrop-blur-md"
           >
@@ -162,7 +162,7 @@ export default async function Page() {
               {Array.from({ length: 84 }).map((_, i) => (
                 <div 
                   key={i} 
-                  className={`asymmetrical-box aspect-square rounded-sm border border-zinc-950/40 transition-colors duration-300 ${
+                  className={`aspect-square rounded-sm border border-zinc-950/40 transition-colors duration-300 ${
                     i % 7 === 0 ? 'bg-purple-500/40 hover:bg-purple-400' : i % 5 === 0 ? 'bg-purple-500/20 hover:bg-purple-400' : 'bg-zinc-900 hover:bg-zinc-800'
                   }`} 
                 />
